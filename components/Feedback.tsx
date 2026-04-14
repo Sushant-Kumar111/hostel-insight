@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User } from 'firebase/auth';
 import { Page } from '../types';
 import Icon from './icons/IconMap';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from '../firebase';
 // FIX: Corrected import path to be explicit.
 import { db } from '../firebase.ts';
 

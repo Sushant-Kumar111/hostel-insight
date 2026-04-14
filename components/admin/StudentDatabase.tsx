@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, onSnapshot, query } from '../../firebase';
 import { Page, StudentDetails, UserBooking } from '../../types';
 
 interface StudentDatabaseProps {

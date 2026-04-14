@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { User, onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc, setDoc, writeBatch, collection, getDocs, updateDoc, runTransaction } from 'firebase/firestore';
 // FIX: Corrected import path to be explicit.
-import { auth, db, isFirebaseConfigured } from './firebase';
-// FIX: Import the `Room` type to resolve a type error.
+import { auth, db, isFirebaseConfigured, onAuthStateChanged, signOut, collection, getDocs, doc, getDoc, writeBatch, updateDoc, setDoc, runTransaction } from './firebase';
 import { Page, Floor, UserBooking, Student, Room } from './types';
 import { initialHostelData, ADMIN_EMAIL } from './constants';
 
@@ -59,7 +56,7 @@ const FirebaseNotConfigured: React.FC = () => {
 };
 
 const App: React.FC = () => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<any | null>(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState<Page>(Page.Dashboard);
@@ -69,29 +66,39 @@ const App: React.FC = () => {
     const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     const fetchHostelData = useCallback(async () => {
-        if (!db) return;
+        console.log('[fetchHostelData] Starting to fetch hostel data, db=', db);
+        if (!db) {
+            console.error('[fetchHostelData] db is not available');
+            return;
+        }
         try {
             const floorsCollection = collection(db, 'floors');
+            console.log('[fetchHostelData] Created collection ref:', floorsCollection);
+            
             const floorSnapshot = await getDocs(floorsCollection);
+            console.log('[fetchHostelData] Got snapshot:', floorSnapshot);
+            
             if (floorSnapshot.empty) {
+                console.log('[fetchHostelData] No floors found, setting needsSeeding to true');
                 setNeedsSeeding(true);
                 setFloors([]);
             } else {
+                console.log('[fetchHostelData] Found floors, processing...');
                 const floorsData = floorSnapshot.docs.map(doc => {
                     const data = doc.data();
-                    // Robustly create Floor object to match Firestore data structure
                     return {
                         id: doc.id,
-                        floorNumber: data.floorNumber || data.id, // Use floorNumber, fallback to `id` field from data
+                        floorNumber: data.floorNumber || data.id,
                         rooms: data.rooms || [],
                     } as Floor;
                 }).sort((a, b) => a.floorNumber - b.floorNumber);
+                console.log('[fetchHostelData] Processed floors:', floorsData);
                 setFloors(floorsData);
                 setNeedsSeeding(false);
             }
         } catch (error) {
-            console.error("Error fetching hostel data: ", error);
-            setNotification({ message: 'Failed to load hostel data.', type: 'error' });
+            console.error("[fetchHostelData] Error fetching hostel data: ", error);
+            setNotification({ message: `Failed to load hostel data: ${error instanceof Error ? error.message : String(error)}`, type: 'error' });
         }
     }, []);
 
@@ -270,7 +277,7 @@ const App: React.FC = () => {
     
                 // 4. Execute transaction updates
                 transaction.update(oldFloorRef, { rooms: updatedOldRooms });
-                if (oldFloorRef.path !== newFloorRef.path) { // Only update new floor if it's different
+                if (currentRoom.floorId !== preferredRoom.floorId) { // Only update new floor if it's different
                     transaction.update(newFloorRef, { rooms: updatedNewRooms });
                 }
                 transaction.update(userBookingRef, {
@@ -358,7 +365,12 @@ const App: React.FC = () => {
                 <Auth onLogin={(loggedInUser) => setUser(loggedInUser)} />
             ) : (
                 <>
-                    <Header user={user} onLogout={handleLogout} isAdmin={isAdmin} />
+                    <Header 
+                        user={user} 
+                        onLogout={handleLogout} 
+                        isAdmin={isAdmin} 
+                        onGoHome={() => navigateTo(isAdmin ? Page.AdminDashboard : Page.Dashboard)}
+                    />
                     <main className="p-4 sm:p-6 lg:p-8">
                         {renderPage()}
                     </main>

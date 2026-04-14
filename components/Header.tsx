@@ -6,14 +6,18 @@ interface HeaderProps {
   user: User;
   onLogout: () => void;
   isAdmin: boolean;
+  onGoHome?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ user, onLogout, isAdmin }) => {
+const Header: React.FC<HeaderProps> = ({ user, onLogout, isAdmin, onGoHome }) => {
   return (
     <header className="bg-white shadow-sm sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-2">
+          <div 
+            className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={onGoHome}
+          >
             <div className="bg-violet-600 p-2 rounded-lg">
                 <Icon name="building" className="text-white h-6 w-6" />
             </div>

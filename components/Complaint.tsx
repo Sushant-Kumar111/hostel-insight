@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { Page, ComplaintRecord } from '../types';
-import { addDoc, collection, serverTimestamp, query, where, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, query, where, onSnapshot } from '../firebase';
 import { db } from '../firebase';
 
 interface ComplaintProps {

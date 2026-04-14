@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { Page, LeaveRequest } from '../types';
-import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, query, where, onSnapshot, orderBy } from '../firebase';
 import { db } from '../firebase';
 
 interface LeaveApplyProps {

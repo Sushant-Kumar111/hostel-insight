@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { Page, UserBooking, Floor, Room } from '../types';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from '../firebase';
 import { db } from '../firebase';
 
 interface LaundryServiceProps {

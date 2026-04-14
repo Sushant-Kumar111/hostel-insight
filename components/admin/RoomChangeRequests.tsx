@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, onSnapshot, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, query, where, orderBy } from '../../firebase';
 import { Page, RoomChangeRequest } from '../../types';
 
 interface RoomChangeRequestsProps {

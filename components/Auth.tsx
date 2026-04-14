@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    updateProfile,
-    User
-} from 'firebase/auth';
 import { auth } from '../firebase';
 
 interface AuthProps {
-    onLogin: (user: User) => void;
+    onLogin: (user: any) => void;
 }
 
 const Auth: React.FC<AuthProps> = ({ onLogin }) => {
@@ -25,31 +19,26 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
         setLoading(true);
 
         if (!auth) {
-            setError("Firebase is not configured correctly.");
+            setError("Auth is not configured correctly.");
             setLoading(false);
             return;
         }
 
         try {
             if (isLogin) {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                onLogin(userCredential.user);
+                const user = await auth.signIn(email, password);
+                onLogin(user);
             } else {
                 if (!fullName) {
                     setError("Full Name is required for sign up.");
                     setLoading(false);
                     return;
                 }
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await updateProfile(userCredential.user, { displayName: fullName });
-                onLogin(userCredential.user);
+                const user = await auth.signUp(email, password, fullName);
+                onLogin(user);
             }
         } catch (err: any) {
-            if (err.code === 'auth/invalid-credential') {
-                setError('Invalid email or password. Please try again.');
-            } else {
-                 setError("An error occurred. Please check your details and try again.");
-            }
+            setError("An error occurred. Please check your details and try again.");
         } finally {
             setLoading(false);
         }

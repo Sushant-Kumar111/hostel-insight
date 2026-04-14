@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy } from '../../firebase';
 import { FeedbackRecord, Page } from '../../types';
 import Icon from '../icons/IconMap';
 
